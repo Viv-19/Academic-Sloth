@@ -1,0 +1,28 @@
+{
+  "name": "academic-sloth",
+  "version": "1.0.0",
+  "description": "- **Sloth_backend/**: Node.js Product Backend - **Sloth_ai_service/**: Python AI/RAG Engine - **Sloth_frontend/**: Frontend UI - **docs/**: System design docs - **scripts/**: Dev scripts - **docker/**: Docker configurations",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "start": "node Sloth_backend/src/server.js",
+    "dev": "nodemon Sloth_backend/src/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "helmet": "^8.1.0",
+    "morgan": "^1.10.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14",
+    "prisma": "^6.19.3"
+  }
+}

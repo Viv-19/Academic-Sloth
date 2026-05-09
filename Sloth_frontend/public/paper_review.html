@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Paper Review - Academic Sloth</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <style>
+        body {
+            scrollbar-width: thin;
+            scrollbar-color: #ec7f13 #221910;
+            margin: 0;
+            padding: 0;
+        }
+
+        body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        body::-webkit-scrollbar-track {
+            background: #221910;
+        }
+
+        body::-webkit-scrollbar-thumb {
+            background-color: #ec7f13;
+            border-radius: 20px;
+            border: 3px solid #221910;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: { extend: { colors: { "primary": "#ec7f13", "background-light": "#f8f7f6", "background-dark": "#221910", }, fontFamily: { "display": ["Lexend", "sans-serif"] }, }, },
+        }
+    </script>
+</head>
+
+<body class="font-display">
+    <div class="flex flex-col h-screen bg-background-dark">
+        <!-- TopNavBar -->
+        <header class="flex items-center justify-between border-b border-white/10 px-4 md:px-10 py-3">
+            <a href="dashboard.html" class="flex items-center gap-4 text-white">
+                <div class="size-6 text-primary">
+                    <svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M44 11.2727C44 14.0109 39.8386 16.3957 33.69 17.6364C39.8386 18.877 44 21.2618 44 24C44 26.7382 39.8386 29.123 33.69 30.3636C39.8386 31.6043 44 33.9891 44 36.7273C44 40.7439 35.0457 44 24 44C12.9543 44 4 40.7439 4 36.7273C4 33.9891 8.16144 31.6043 14.31 30.3636C8.16144 29.123 4 26.7382 4 24C4 21.2618 8.16144 18.877 14.31 17.6364C8.16144 16.3957 4 14.0109 4 11.2727C4 7.25611 12.9543 4 24 4C35.0457 4 44 7.25611 44 11.2727Z"
+                            fill="currentColor"></path>
+                    </svg>
+                </div>
+                <h2 class="text-white text-xl font-bold">Academic Sloth</h2>
+            </a>
+            <div class="flex items-center gap-4">
+                <button id="download-btn"
+                    class="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white text-sm font-medium hover:bg-white/20 transition-colors">
+                    <span class="material-symbols-outlined">download</span>
+                    <span>Download PDF</span>
+                </button>
+                <a href="dashboard.html" class="text-white/80 hover:text-white transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </a>
+            </div>
+        </header>
+
+        <!-- Split View: Paper Viewer + Chat -->
+        <div class="flex flex-1 overflow-hidden">
+            <!-- Left: Paper Viewer -->
+            <div class="flex-1 flex flex-col border-r border-white/10">
+                <div class="p-4 border-b border-white/10">
+                    <h1 id="paper-title" class="text-white text-xl font-bold mb-2">Paper Title Loading...</h1>
+                    <p id="paper-authors" class="text-white/60 text-sm">Authors loading...</p>
+                </div>
+                <div class="flex-1 overflow-auto p-6 bg-white/5">
+                    <div id="paper-content" class="text-white/90 text-sm leading-relaxed max-w-4xl">
+                        <!--PDF viewer or paper content will be loaded here -->
+                        <p class="text-white/50">Loading paper content...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: RAG Chat -->
+            <div class="w-full md:w-[400px] lg:w-[500px] flex flex-col bg-background-dark">
+                <div class="p-4 border-b border-white/10">
+                    <h2 class="text-white text-lg font-bold flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">smart_toy</span>
+                        Chat with Paper
+                    </h2>
+                    <p class="text-white/60 text-xs mt-1">Ask questions about this paper</p>
+                </div>
+
+                <!-- Chat Messages -->
+                <div id="chat-messages" class="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
+                    <div class="flex gap-2 items-start">
+                        <span class="material-symbols-outlined text-primary text-2xl">smart_toy</span>
+                        <div class="flex flex-col gap-1">
+                            <p class="text-white/90 text-sm">Hello! I'm your AI assistant. Ask me anything about this
+                                paper!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Input -->
+                <div class="p-4 border-t border-white/10">
+                    <div class="flex gap-2">
+                        <input type="text" id="chat-input" placeholder="Ask a question about this paper..."
+                            class="flex-1 min-h-[44px] rounded-lg border border-white/20 bg-white/5 px-4 text-white text-sm placeholder:text-white/50 focus:border-primary focus:outline-none transition-colors" />
+                        <button id="send-btn"
+                            class="flex items-center justify-center h-[44px] w-[44px] rounded-lg bg-primary text-background-dark hover:scale-[1.05] transition-transform shadow-md">
+                            <span class="material-symbols-outlined">send</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { auth } from './js/auth.js';
+        import { chat } from './js/chat.js';
+        import { api } from './js/api.js';
+
+        // Check authentication
+        if (!auth.isAuthenticated()) {
+            window.location.href = 'signin.html';
+        }
+
+        // Get paper ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const paperId = urlParams.get('id');
+
+        // Load paper
+        async function loadPaper() {
+            if (!paperId) {
+                alert('No paper ID provided');
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            try {
+                const paper = await api.getPaper(paperId);
+                document.getElementById('paper-title').textContent = paper.title;
+                document.getElementById('paper-authors').textContent = `Authors: ${paper.authors}`;
+                document.getElementById('paper-content').innerHTML = paper.content || '<p class="text-white/50">Paper content not available for preview</p>';
+            } catch (error) {
+                console.error('Error loading paper:', error);
+            }
+        }
+
+        loadPaper();
+
+        // Chat functionality
+        document.getElementById('send-btn').addEventListener('click', () => {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (message) {
+                chat.sendMessage(message, paperId, 'chat-messages');
+                input.value = '';
+            }
+        });
+
+        document.getElementById('chat-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('send-btn').click();
+            }
+        });
+
+        // Download functionality
+        document.getElementById('download-btn').addEventListener('click', () => {
+            // Trigger PDF download
+            window.open(`/api/papers/${paperId}/download`, '_blank');
+        });
+    </script>
+</body>
+
+</html>

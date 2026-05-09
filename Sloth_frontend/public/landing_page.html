@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Academic Sloth - AI Research Assistant</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <style>
+        body {
+            scrollbar-width: thin;
+            scrollbar-color: #ec7f13 #221910;
+        }
+
+        body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        body::-webkit-scrollbar-track {
+            background: #221910;
+        }
+
+        body::-webkit-scrollbar-thumb {
+            background-color: #ec7f13;
+            border-radius: 20px;
+            border: 3px solid #221910;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec7f13",
+                        "background-light": "#f8f7f6",
+                        "background-dark": "#221910",
+                    },
+                    fontFamily: { "display": ["Lexend", "sans-serif"] },
+                },
+            },
+        }
+    </script>
+</head>
+
+<body class="font-display">
+    <div
+        class="relative flex min-h-screen w-full flex-col bg-background-light dark:bg-background-dark group/design-root overflow-x-hidden">
+        <div class="layout-container flex h-full grow flex-col">
+            <div class="px-4 md:px-10 lg:px-20 xl:px-40 flex flex-1 justify-center py-5">
+                <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+
+                    <!-- TopNavBar -->
+                    <header
+                        class="flex items-center justify-between whitespace-nowrap border-b border-solid border-white/10 px-4 md:px-10 py-3">
+                        <div class="flex items-center gap-4 text-white">
+                            <div class="size-6 text-primary">
+                                <svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M44 11.2727C44 14.0109 39.8386 16.3957 33.69 17.6364C39.8386 18.877 44 21.2618 44 24C44 26.7382 39.8386 29.123 33.69 30.3636C39.8386 31.6043 44 33.9891 44 36.7273C44 40.7439 35.0457 44 24 44C12.9543 44 4 40.7439 4 36.7273C4 33.9891 8.16144 31.6043 14.31 30.3636C8.16144 29.123 4 26.7382 4 24C4 21.2618 8.16144 18.877 14.31 17.6364C8.16144 16.3957 4 14.0109 4 11.2727C4 7.25611 12.9543 4 24 4C35.0457 4 44 7.25611 44 11.2727Z"
+                                        fill="currentColor"></path>
+                                </svg>
+                            </div>
+                            <h2 class="text-white text-xl font-bold leading-tight tracking-[-0.015em]">Academic Sloth
+                            </h2>
+                        </div>
+                        <div class="flex flex-1 justify-end gap-8">
+                            <div class="flex items-center gap-6">
+                                <a class="text-white/80 hover:text-white text-sm font-medium leading-normal transition-colors"
+                                    href="signin.html">Sign In</a>
+                                <a class="text-white/80 hover:text-white text-sm font-medium leading-normal transition-colors"
+                                    href="signup.html">Sign Up</a>
+                            </div>
+                        </div>
+                    </header>
+
+                    <!-- HeroSection -->
+                    <div class="@container">
+                        <div class="p-0 @[480px]:p-4">
+                            <div class="flex min-h-[calc(100vh-120px)] flex-col gap-6 bg-cover bg-center bg-no-repeat @[480px]:gap-8 @[480px]:rounded-xl items-center justify-center p-4 shadow-lg"
+                                style='background-image: linear-gradient(rgba(34, 25, 16, 0.6) 0%, rgba(34, 25, 16, 0.8) 100%), url("https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200");'>
+                                <div class="flex flex-col gap-3 text-center">
+                                    <h1
+                                        class="text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-6xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em]">
+                                        Academic Sloth</h1>
+                                    <h2
+                                        class="text-white/90 text-sm font-normal leading-normal @[480px]:text-lg @[480px]:font-normal @[480px]:leading-normal">
+                                        Your Personal AI Research Assistant</h2>
+                                </div>
+                                <a href="dashboard.html"
+                                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-primary text-background-dark text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em] transition-transform hover:scale-105 shadow-md">
+                                    <span class="truncate">Get Started</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Key Features -->
+                    <h2
+                        class="text-white text-3xl font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-16 text-center">
+                        Key Features</h2>
+                    <div class="flex flex-col gap-10 px-4 py-10 @container">
+                        <div class="text-center">
+                            <h1
+                                class="text-white tracking-light text-xl font-bold leading-tight @[480px]:text-2xl @[480px]:font-black max-w-[720px] mx-auto">
+                                Unlock the Power of AI-Driven Research</h1>
+                            <p class="text-white/80 text-base font-normal leading-normal max-w-[720px] mt-2 mx-auto">
+                                Academic Sloth streamlines your research process from discovery to understanding. Find
+                                relevant papers, manage your library, and get answers from your documents instantly.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-0">
+                            <div
+                                class="flex flex-1 gap-4 rounded-xl border border-white/10 bg-white/5 p-6 flex-col shadow-lg hover:bg-white/10 transition-colors">
+                                <div class="text-primary"><span class="material-symbols-outlined"
+                                        style="font-size: 32px;">search</span></div>
+                                <div class="flex flex-col gap-1">
+                                    <h2 class="text-white text-lg font-bold leading-tight">Powerful Search</h2>
+                                    <p class="text-white/70 text-sm font-normal leading-normal">Effortlessly search
+                                        through a vast and comprehensive database of academic papers to find exactly
+                                        what you need.</p>
+                                </div>
+                            </div>
+                            <div
+                                class="flex flex-1 gap-4 rounded-xl border border-white/10 bg-white/5 p-6 flex-col shadow-lg hover:bg-white/10 transition-colors">
+                                <div class="text-primary"><span class="material-symbols-outlined"
+                                        style="font-size: 32px;">upload_file</span></div>
+                                <div class="flex flex-col gap-1">
+                                    <h2 class="text-white text-lg font-bold leading-tight">Upload Your Documents</h2>
+                                    <p class="text-white/70 text-sm font-normal leading-normal">Securely upload and
+                                        organize your own documents, creating a personalized and accessible research
+                                        library.</p>
+                                </div>
+                            </div>
+                            <div
+                                class="flex flex-1 gap-4 rounded-xl border border-white/10 bg-white/5 p-6 flex-col shadow-lg hover:bg-white/10 transition-colors">
+                                <div class="text-primary"><span class="material-symbols-outlined"
+                                        style="font-size: 32px;">smart_toy</span></div>
+                                <div class="flex flex-col gap-1">
+                                    <h2 class="text-white text-lg font-bold leading-tight">Chat with Your Research</h2>
+                                    <p class="text-white/70 text-sm font-normal leading-normal">Interact with our
+                                        intelligent RAG chatbot to get summaries, ask questions, and gain insights from
+                                        your documents.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Why Choose Us -->
+                    <h2
+                        class="text-white text-3xl font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-16 text-center">
+                        Why Choose Us?</h2>
+                    <div class="px-4 py-10">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div
+                                class="flex gap-4 items-start p-6 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
+                                <span class="material-symbols-outlined text-primary text-3xl">speed</span>
+                                <div>
+                                    <h3 class="text-white text-lg font-semibold mb-2">Save Time</h3>
+                                    <p class="text-white/70 text-sm">Quickly find and analyze papers instead of spending
+                                        hours searching through databases.</p>
+                                </div>
+                            </div>
+                            <div
+                                class="flex gap-4 items-start p-6 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
+                                <span class="material-symbols-outlined text-primary text-3xl">psychology</span>
+                                <div>
+                                    <h3 class="text-white text-lg font-semibold mb-2">AI-Powered Insights</h3>
+                                    <p class="text-white/70 text-sm">Get intelligent summaries and answers powered by
+                                        advanced RAG technology.</p>
+                                </div>
+                            </div>
+                            <div
+                                class="flex gap-4 items-start p-6 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
+                                <span class="material-symbols-outlined text-primary text-3xl">folder_open</span>
+                                <div>
+                                    <h3 class="text-white text-lg font-semibold mb-2">Organized Library</h3>
+                                    <p class="text-white/70 text-sm">Keep all your research papers organized in one
+                                        place with easy access.</p>
+                                </div>
+                            </div>
+                            <div
+                                class="flex gap-4 items-start p-6 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
+                                <span class="material-symbols-outlined text-primary text-3xl">security</span>
+                                <div>
+                                    <h3 class="text-white text-lg font-semibold mb-2">Secure & Private</h3>
+                                    <p class="text-white/70 text-sm">Your documents and research data are securely
+                                        stored and private.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <footer class="border-t border-solid border-white/10 mt-16">
+                        <div
+                            class="flex flex-col md:flex-row items-center justify-between px-4 md:px-10 py-6 text-center md:text-left gap-4">
+                            <p class="text-sm text-white/60">© 2024 Academic Sloth. All rights reserved.</p>
+                            <div class="flex items-center gap-6">
+                                <a class="text-sm text-white/60 hover:text-white transition-colors" href="#">About
+                                    Us</a>
+                                <a class="text-sm text-white/60 hover:text-white transition-colors" href="#">Terms of
+                                    Service</a>
+                                <a class="text-sm text-white/60 hover:text-white transition-colors" href="#">Privacy
+                                    Policy</a>
+                            </div>
+                        </div>
+                    </footer>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

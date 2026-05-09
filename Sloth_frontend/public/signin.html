@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Sign In - Academic Sloth</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <style>
+        body {
+            scrollbar-width: thin;
+            scrollbar-color: #ec7f13 #221910;
+        }
+
+        body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        body::-webkit-scrollbar-track {
+            background: #221910;
+        }
+
+        body::-webkit-scrollbar-thumb {
+            background-color: #ec7f13;
+            border-radius: 20px;
+            border: 3px solid #221910;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: { extend: { colors: { "primary": "#ec7f13", "background-light": "#f8f7f6", "background-dark": "#221910", }, fontFamily: { "display": ["Lexend", "sans-serif"] }, }, },
+        }
+    </script>
+</head>
+
+<body class="font-display">
+    <div
+        class="relative flex min-h-screen w-full flex-col bg-background-light dark:bg-background-dark overflow-x-hidden">
+        <div class="layout-container flex h-full grow flex-col">
+            <div class="px-4 md:px-10 lg:px-20 xl:px-40 flex flex-1 justify-center py-5">
+                <div class="layout-content-container flex flex-col max-w-[520px] flex-1">
+
+                    <!-- TopNavBar -->
+                    <header class="flex items-center justify-between border-b border-white/10 px-4 md:px-10 py-3 mb-8">
+                        <a href="landing_page.html" class="flex items-center gap-4 text-white">
+                            <div class="size-6 text-primary">
+                                <svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M44 11.2727C44 14.0109 39.8386 16.3957 33.69 17.6364C39.8386 18.877 44 21.2618 44 24C44 26.7382 39.8386 29.123 33.69 30.3636C39.8386 31.6043 44 33.9891 44 36.7273C44 40.7439 35.0457 44 24 44C12.9543 44 4 40.7439 4 36.7273C4 33.9891 8.16144 31.6043 14.31 30.3636C8.16144 29.123 4 26.7382 4 24C4 21.2618 8.16144 18.877 14.31 17.6364C8.16144 16.3957 4 14.0109 4 11.2727C4 7.25611 12.9543 4 24 4C35.0457 4 44 7.25611 44 11.2727Z"
+                                        fill="currentColor"></path>
+                                </svg>
+                            </div>
+                            <h2 class="text-white text-xl font-bold">Academic Sloth</h2>
+                        </a>
+                    </header>
+
+                    <!-- Sign In Form -->
+                    <div class="flex flex-col gap-6 px-4 py-10">
+                        <div class="text-center">
+                            <h1 class="text-white text-3xl font-bold mb-2">Welcome Back</h1>
+                            <p class="text-white/70 text-base">Sign in to continue your research</p>
+                        </div>
+
+                        <form id="signinForm" class="flex flex-col gap-4 mt-4">
+                            <div class="flex flex-col gap-2">
+                                <label class="text-white text-sm font-medium" for="email">Email</label>
+                                <input type="email" id="email" name="email" required
+                                    class="min-h-[44px] w-full rounded-lg border border-white/20 bg-white/5 px-4 text-white placeholder:text-white/50 focus:border-primary focus:outline-none transition-colors"
+                                    placeholder="john@university.edu" />
+                            </div>
+
+                            <div class="flex flex-col gap-2">
+                                <label class="text-white text-sm font-medium" for="password">Password</label>
+                                <input type="password" id="password" name="password" required
+                                    class="min-h-[44px] w-full rounded-lg border border-white/20 bg-white/5 px-4 text-white placeholder:text-white/50 focus:border-primary focus:outline-none transition-colors"
+                                    placeholder="••••••••" />
+                            </div>
+
+                            <div class="flex items-center justify-between mt-2">
+                                <div class="flex items-center gap-2">
+                                    <input type="checkbox" id="remember" name="remember"
+                                        class="h-4 w-4 rounded border-white/20 bg-white/5 text-primary focus:ring-primary" />
+                                    <label for="remember" class="text-white/80 text-sm">Remember me</label>
+                                </div>
+                                <a href="#" class="text-primary text-sm hover:underline">Forgot password?</a>
+                            </div>
+
+                            <button type="submit"
+                                class="flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-lg px-4 bg-primary text-background-dark text-base font-bold transition-transform hover:scale-[1.02] shadow-md mt-4">
+                                <span class="truncate">Sign In</span>
+                            </button>
+
+                            <p class="text-center text-white/60 text-sm mt-2">
+                                Don't have an account? <a href="signup.html"
+                                    class="text-primary hover:underline font-medium">Sign Up</a>
+                            </p>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { auth } from './js/auth.js';
+
+        document.getElementById('signinForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const formData = {
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value,
+                remember: document.getElementById('remember').checked
+            };
+
+            await auth.signin(formData);
+        });
+    </script>
+</body>
+
+</html>

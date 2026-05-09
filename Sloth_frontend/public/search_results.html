@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Search Results - Academic Sloth</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <style>
+        body {
+            scrollbar-width: thin;
+            scrollbar-color: #ec7f13 #221910;
+        }
+
+        body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        body::-webkit-scrollbar-track {
+            background: #221910;
+        }
+
+        body::-webkit-scrollbar-thumb {
+            background-color: #ec7f13;
+            border-radius: 20px;
+            border: 3px solid #221910;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: { extend: { colors: { "primary": "#ec7f13", "background-light": "#f8f7f6", "background-dark": "#221910", }, fontFamily: { "display": ["Lexend", "sans-serif"] }, }, },
+        }
+    </script>
+</head>
+
+<body class="font-display">
+    <div
+        class="relative flex min-h-screen w-full flex-col bg-background-light dark:bg-background-dark overflow-x-hidden">
+        <div class="layout-container flex h-full grow flex-col">
+            <div class="px-4 md:px-10 lg:px-20 xl:px-40 flex flex-1 justify-center py-5">
+                <div class="layout-content-container flex flex-col max-w-[1200px] flex-1">
+
+                    <!-- TopNavBar -->
+                    <header class="flex items-center justify-between border-b border-white/10 px-4 md:px-10 py-3 mb-8">
+                        <a href="dashboard.html" class="flex items-center gap-4 text-white">
+                            <div class="size-6 text-primary">
+                                <svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M44 11.2727C44 14.0109 39.8386 16.3957 33.69 17.6364C39.8386 18.877 44 21.2618 44 24C44 26.7382 39.8386 29.123 33.69 30.3636C39.8386 31.6043 44 33.9891 44 36.7273C44 40.7439 35.0457 44 24 44C12.9543 44 4 40.7439 4 36.7273C4 33.9891 8.16144 31.6043 14.31 30.3636C8.16144 29.123 4 26.7382 4 24C4 21.2618 8.16144 18.877 14.31 17.6364C8.16144 16.3957 4 14.0109 4 11.2727C4 7.25611 12.9543 4 24 4C35.0457 4 44 7.25611 44 11.2727Z"
+                                        fill="currentColor"></path>
+                                </svg>
+                            </div>
+                            <h2 class="text-white text-xl font-bold">Academic Sloth</h2>
+                        </a>
+                        <div class="flex items-center gap-6">
+                            <a href="library.html"
+                                class="text-white/80 hover:text-white text-sm font-medium transition-colors">Library</a>
+                            <button id="user-menu"
+                                class="flex items-center gap-2 text-white/80 hover:text-white transition-colors">
+                                <span class="material-symbols-outlined">account_circle</span>
+                            </button>
+                        </div>
+                    </header>
+
+                    <!-- Search Bar -->
+                    <div class="flex flex-col gap-4 px-4 mb-6">
+                        <div class="flex gap-2">
+                            <input type="text" id="search-input" placeholder="Search for papers, authors, topics..."
+                                class="flex-1 min-h-[48px] rounded-lg border border-white/20 bg-white/5 px-4 text-white placeholder:text-white/50 focus:border-primary focus:outline-none transition-colors" />
+                            <button id="search-btn"
+                                class="flex items-center justify-center gap-2 h-[48px] px-6 rounded-lg bg-primary text-background-dark font-bold hover:scale-[1.02] transition-transform shadow-md">
+                                <span class="material-symbols-outlined">search</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Results Section -->
+                    <div class="flex flex-col gap-6 px-4 py-4">
+                        <div class="flex items-center justify-between">
+                            <h1 class="text-white text-2xl font-bold">Search Results</h1>
+                            <p id="result-count" class="text-white/60 text-sm">Loading...</p>
+                        </div>
+
+                        <!-- Search Results List -->
+                        <div id="search-results" class="flex flex-col gap-4">
+                            <!-- Results will be loaded here by JS -->
+                            <div class="flex flex-col gap-2 p-6 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors cursor-pointer"
+                                onclick="window.location.href='paper_review.html?id=1'">
+                                <h3 class="text-white text-lg font-bold line-clamp-2">Sample Paper Title: Deep Learning
+                                    Approaches to Natural Language Processing</h3>
+                                <p class="text-white/60 text-sm">Authors: John Doe, Jane Smith, Bob Johnson</p>
+                                <p class="text-white/70 text-sm line-clamp-3 mt-2">This paper presents a comprehensive
+                                    survey of deep learning approaches applied to natural language processing tasks...
+                                </p>
+                                <div class="flex gap-4 mt-2">
+                                    <span class="text-white/50 text-xs">Year: 2024</span>
+                                    <span class="text-white/50 text-xs">Citations: 142</span>
+                                    <span class="text-white/50 text-xs">arXiv:2401.12345</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Load More Button -->
+                        <button id="load-more"
+                            class="flex items-center justify-center gap-2 h-[44px] px-6 rounded-lg bg-white/10 border border-white/20 text-white font-medium hover:bg-white/20 transition-colors self-center mt-4">
+                            <span>Load More Results</span>
+                            <span class="material-symbols-outlined">expand_more</span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { auth } from './js/auth.js';
+        import { search } from './js/search.js';
+
+        // Check authentication
+        if (!auth.isAuthenticated()) {
+            window.location.href = 'signin.html';
+        }
+
+        // Get search query
+        const query = sessionStorage.getItem('searchQuery') || '';
+        document.getElementById('search-input').value = query;
+
+        // Perform search
+        if (query) {
+            search.performSearch(query, 'search-results', 'result-count');
+        }
+
+        // New search
+        document.getElementById('search-btn').addEventListener('click', () => {
+            const newQuery = document.getElementById('search-input').value;
+            if (newQuery.trim()) {
+                sessionStorage.setItem('searchQuery', newQuery);
+                search.performSearch(newQuery, 'search-results', 'result-count');
+            }
+        });
+
+        document.getElementById('search-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('search-btn').click();
+            }
+        });
+    </script>
+</body>
+
+</html>
