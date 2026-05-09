@@ -13,10 +13,13 @@ datasource db {
 }
 
 model User {
-  id                String   @id @default(uuid())
+  id                String    @id @default(uuid())
   name              String
-  email             String   @unique
+  email             String    @unique
   password_hash     String
-  subscription_tier String   @default("free") // "free" or "pro"
-  created_at        DateTime @default(now())
+  is_verified       Boolean   @default(false) // Whether the user has verified their email via OTP
+  otp               String?   // The 6-digit code (nullable because it's only set temporarily)
+  otp_expiry        DateTime? // When the code expires (nullable)
+  subscription_tier String    @default("free") // "free" or "pro"
+  created_at        DateTime  @default(now())
 }
