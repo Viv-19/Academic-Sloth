@@ -37,34 +37,58 @@
     </script>
 </head>
 
-<body class="font-display">
-    <div
-        class="relative flex min-h-screen w-full flex-col bg-background-light dark:bg-background-dark overflow-x-hidden">
-        <div class="layout-container flex h-full grow flex-col">
-            <div class="px-4 md:px-10 lg:px-20 xl:px-40 flex flex-1 justify-center py-5">
-                <div class="layout-content-container flex flex-col max-w-[1200px] flex-1">
+<body class="font-display bg-background-light dark:bg-background-dark text-white">
+    <div class="relative flex min-h-screen w-full overflow-hidden">
+        
+        <!-- Sidebar -->
+        <aside class="w-[280px] h-screen sticky top-0 flex flex-col bg-[#1c140d] border-r border-white/5 shrink-0 z-10 shadow-2xl">
+            <!-- Logo Section -->
+            <div class="flex items-center gap-4 p-6 border-b border-white/5">
+                <div class="flex items-center justify-center">
+                    <img src="assets/images/Academic Sloth logo.png" class="h-8 w-auto object-contain drop-shadow-md" alt="Academic Sloth Logo" />
+                </div>
+                <h2 class="text-white text-lg font-bold tracking-tight">Academic Sloth</h2>
+            </div>
 
-                    <!-- TopNavBar -->
-                    <header class="flex items-center justify-between border-b border-white/10 px-4 md:px-10 py-3 mb-8">
-                        <a href="dashboard.html" class="flex items-center gap-4 text-white">
-                            <div class="size-6 text-primary">
-                                <svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M44 11.2727C44 14.0109 39.8386 16.3957 33.69 17.6364C39.8386 18.877 44 21.2618 44 24C44 26.7382 39.8386 29.123 33.69 30.3636C39.8386 31.6043 44 33.9891 44 36.7273C44 40.7439 35.0457 44 24 44C12.9543 44 4 40.7439 4 36.7273C4 33.9891 8.16144 31.6043 14.31 30.3636C8.16144 29.123 4 26.7382 4 24C4 21.2618 8.16144 18.877 14.31 17.6364C8.16144 16.3957 4 14.0109 4 11.2727C4 7.25611 12.9543 4 24 4C35.0457 4 44 7.25611 44 11.2727Z"
-                                        fill="currentColor"></path>
-                                </svg>
-                            </div>
-                            <h2 class="text-white text-xl font-bold">Academic Sloth</h2>
-                        </a>
-                        <div class="flex items-center gap-6">
-                            <a href="dashboard.html"
-                                class="text-white/80 hover:text-white text-sm font-medium transition-colors">Dashboard</a>
-                            <button id="user-menu"
-                                class="flex items-center gap-2 text-white/80 hover:text-white transition-colors">
-                                <span class="material-symbols-outlined">account_circle</span>
-                            </button>
+            <!-- Navigation items -->
+            <nav class="flex flex-col gap-2 p-4 mt-4 flex-1">
+                <a href="dashboard.html" class="flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/5 text-white/60 hover:text-white font-medium transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">grid_view</span> Dashboard
+                </a>
+                <a href="library.html" class="flex items-center gap-4 px-4 py-3 rounded-lg bg-white/10 text-white font-medium transition-colors shadow-sm">
+                    <span class="material-symbols-outlined text-[20px]">book</span> My Library
+                </a>
+                <a href="chat.html" class="flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/5 text-white/60 hover:text-white font-medium transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">chat</span> Chat
+                </a>
+                <a href="settings.html" class="flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/5 text-white/60 hover:text-white font-medium transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">settings</span> Settings
+                </a>
+            </nav>
+
+            <!-- User Profile Bottom -->
+            <div class="p-4 border-t border-white/5 bg-black/20">
+                <div class="flex items-center justify-between group">
+                    <div class="flex items-center gap-3">
+                        <div class="size-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-lg border border-primary/30 shadow-inner">
+                            <span id="sidebar-initial">U</span>
                         </div>
-                    </header>
+                        <div class="flex flex-col">
+                            <span class="text-white text-sm font-bold truncate max-w-[120px]" id="sidebar-username">User</span>
+                            <span class="text-white/50 text-xs">Researcher</span>
+                        </div>
+                    </div>
+                    <button id="logout-btn" title="Logout" class="text-white/40 hover:text-red-400 transition-colors p-2 rounded-lg hover:bg-white/5">
+                        <span class="material-symbols-outlined text-[20px]">logout</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col h-screen overflow-y-auto bg-background-dark">
+            <div class="px-6 md:px-12 lg:px-20 py-10 max-w-[1400px] w-full mx-auto">
+                <div class="flex flex-col gap-10">
 
                     <!-- Library Content -->
                     <div class="flex flex-col gap-6 px-4 py-4">
@@ -120,10 +144,9 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 
     <script type="module">
@@ -134,6 +157,16 @@
         if (!auth.isAuthenticated()) {
             window.location.href = 'signin.html';
         }
+
+        // Load user info
+        const userName = auth.getUser()?.name || 'User';
+        document.getElementById('sidebar-username').textContent = userName;
+        document.getElementById('sidebar-initial').textContent = userName.charAt(0).toUpperCase();
+
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            auth.logout();
+        });
 
         // Load library
         library.loadLibrary('library-papers');

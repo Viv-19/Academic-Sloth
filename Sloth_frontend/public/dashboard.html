@@ -37,41 +37,65 @@
     </script>
 </head>
 
-<body class="font-display">
-    <div
-        class="relative flex min-h-screen w-full flex-col bg-background-light dark:bg-background-dark overflow-x-hidden">
-        <div class="layout-container flex h-full grow flex-col">
-            <div class="px-4 md:px-10 lg:px-20 xl:px-40 flex flex-1 justify-center py-5">
-                <div class="layout-content-container flex flex-col max-w-[1200px] flex-1">
+<body class="font-display bg-background-light dark:bg-background-dark text-white">
+    <div class="relative flex min-h-screen w-full overflow-hidden">
+        
+        <!-- Sidebar -->
+        <aside class="w-[280px] h-screen sticky top-0 flex flex-col bg-[#1c140d] border-r border-white/5 shrink-0 z-10 shadow-2xl">
+            <!-- Logo Section -->
+            <div class="flex items-center gap-4 p-6 border-b border-white/5">
+                <div class="flex items-center justify-center">
+                    <img src="assets/images/Academic Sloth logo.png" class="h-8 w-auto object-contain drop-shadow-md" alt="Academic Sloth Logo" />
+                </div>
+                <h2 class="text-white text-lg font-bold tracking-tight">Academic Sloth</h2>
+            </div>
 
-                    <!-- TopNavBar -->
-                    <header class="flex items-center justify-between border-b border-white/10 px-4 md:px-10 py-3 mb-8">
-                        <a href="dashboard.html" class="flex items-center gap-4 text-white">
-                            <div class="size-6 text-primary">
-                                <svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M44 11.2727C44 14.0109 39.8386 16.3957 33.69 17.6364C39.8386 18.877 44 21.2618 44 24C44 26.7382 39.8386 29.123 33.69 30.3636C39.8386 31.6043 44 33.9891 44 36.7273C44 40.7439 35.0457 44 24 44C12.9543 44 4 40.7439 4 36.7273C4 33.9891 8.16144 31.6043 14.31 30.3636C8.16144 29.123 4 26.7382 4 24C4 21.2618 8.16144 18.877 14.31 17.6364C8.16144 16.3957 4 14.0109 4 11.2727C4 7.25611 12.9543 4 24 4C35.0457 4 44 7.25611 44 11.2727Z"
-                                        fill="currentColor"></path>
-                                </svg>
-                            </div>
-                            <h2 class="text-white text-xl font-bold">Academic Sloth</h2>
-                        </a>
-                        <div class="flex items-center gap-6">
-                            <a href="library.html"
-                                class="text-white/80 hover:text-white text-sm font-medium transition-colors">Library</a>
-                            <button id="user-menu"
-                                class="flex items-center gap-2 text-white/80 hover:text-white transition-colors">
-                                <span class="material-symbols-outlined">account_circle</span>
-                                <span class="text-sm font-medium" id="username">User</span>
-                            </button>
+            <!-- Navigation items -->
+            <nav class="flex flex-col gap-2 p-4 mt-4 flex-1">
+                <a href="dashboard.html" class="flex items-center gap-4 px-4 py-3 rounded-lg bg-white/10 text-white font-medium transition-colors shadow-sm">
+                    <span class="material-symbols-outlined text-[20px]">grid_view</span> Dashboard
+                </a>
+                <a href="library.html" class="flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/5 text-white/60 hover:text-white font-medium transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">book</span> My Library
+                </a>
+                <a href="chat.html" class="flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/5 text-white/60 hover:text-white font-medium transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">chat</span> Chat
+                </a>
+                <a href="settings.html" class="flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-white/5 text-white/60 hover:text-white font-medium transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">settings</span> Settings
+                </a>
+            </nav>
+
+            <!-- User Profile Bottom -->
+            <div class="p-4 border-t border-white/5 bg-black/20">
+                <div class="flex items-center justify-between group">
+                    <div class="flex items-center gap-3">
+                        <div class="size-10 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-lg border border-primary/30 shadow-inner">
+                            <span id="sidebar-initial">U</span>
                         </div>
-                    </header>
+                        <div class="flex flex-col">
+                            <span class="text-white text-sm font-bold truncate max-w-[120px]" id="sidebar-username">User</span>
+                            <span class="text-white/50 text-xs">Researcher</span>
+                        </div>
+                    </div>
+                    <button id="logout-btn" title="Logout" class="text-white/40 hover:text-red-400 transition-colors p-2 rounded-lg hover:bg-white/5">
+                        <span class="material-symbols-outlined text-[20px]">logout</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
 
-                    <!-- Dashboard Content -->
-                    <div class="flex flex-col gap-8 px-4 py-6">
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col h-screen overflow-y-auto bg-background-dark">
+            <div class="px-6 md:px-12 lg:px-20 py-10 max-w-[1400px] w-full mx-auto">
+                <!-- Dashboard Content -->
+                <div class="flex flex-col gap-10">
                         <!-- Search Section -->
                         <div class="flex flex-col gap-4">
-                            <h1 class="text-white text-3xl font-bold">Search Academic Papers</h1>
+                            <div>
+                                <h1 class="text-white text-3xl font-bold">Search Academic Papers</h1>
+                                <p class="text-white/50 text-xs mt-1">PRO TIP: Add author name along with keywords to get the best result.</p>
+                            </div>
                             <div class="flex gap-2">
                                 <input type="text" id="search-input" placeholder="Search for papers, authors, topics..."
                                     class="flex-1 min-h-[48px] rounded-lg border border-white/20 bg-white/5 px-4 text-white placeholder:text-white/50 focus:border-primary focus:outline-none transition-colors" />
@@ -83,19 +107,55 @@
                             </div>
                         </div>
 
-                        <!-- Upload Section -->
-                        <div class="flex flex-col gap-4 p-6 rounded-xl border border-white/10 bg-white/5">
-                            <h2 class="text-white text-xl font-bold">Upload Your Documents</h2>
-                            <p class="text-white/70 text-sm">Upload PDF papers to your library and chat with them using
-                                AI</p>
-                            <div class="flex items-center gap-4">
-                                <label for="file-upload"
-                                    class="flex items-center justify-center gap-2 h-[44px] px-6 rounded-lg bg-white/10 border border-white/20 text-white font-medium hover:bg-white/20 transition-colors cursor-pointer">
-                                    <span class="material-symbols-outlined">upload_file</span>
-                                    <span>Choose File</span>
-                                </label>
-                                <input type="file" id="file-upload" accept=".pdf" class="hidden" />
-                                <span id="file-name" class="text-white/60 text-sm">No file chosen</span>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Upload Section -->
+                            <div class="flex flex-col gap-4 p-6 rounded-xl border border-white/10 bg-white/5">
+                                <h2 class="text-white text-xl font-bold">Upload Local Document</h2>
+                                <p class="text-white/70 text-sm">Upload a PDF from your computer to your library.</p>
+                                <div class="flex items-center gap-4 mt-auto">
+                                    <label for="file-upload"
+                                        class="flex items-center justify-center gap-2 h-[44px] px-6 rounded-lg bg-white/10 border border-white/20 text-white font-medium hover:bg-white/20 transition-colors cursor-pointer">
+                                        <span class="material-symbols-outlined">upload_file</span>
+                                        <span>Choose File</span>
+                                    </label>
+                                    <input type="file" id="file-upload" accept=".pdf" class="hidden" />
+                                    <span id="file-name" class="text-white/60 text-sm truncate max-w-[150px]">No file chosen</span>
+                                </div>
+                            </div>
+
+                            <!-- ArXiv Import Section -->
+                            <div class="flex flex-col gap-4 p-6 rounded-xl border border-white/10 bg-white/5">
+                                <h2 class="text-white text-xl font-bold flex items-center gap-2">
+                                    Import from arXiv 
+                                    <span class="px-2 py-0.5 rounded bg-primary/20 text-primary text-xs border border-primary/30">New</span>
+                                </h2>
+                                <p class="text-white/70 text-sm">Directly fetch and import a paper using its arXiv ID (e.g. 1706.03762).</p>
+                                <div class="flex items-center gap-2 mt-auto">
+                                    <input type="text" id="arxiv-id-input" placeholder="Enter arXiv ID..."
+                                        class="flex-1 min-h-[44px] rounded-lg border border-white/20 bg-white/5 px-4 text-white placeholder:text-white/50 focus:border-primary focus:outline-none transition-colors" />
+                                    <button id="arxiv-preview-btn"
+                                        class="flex items-center justify-center gap-2 h-[44px] px-4 rounded-lg bg-primary text-background-dark font-bold hover:scale-[1.02] transition-transform shadow-md">
+                                        <span class="material-symbols-outlined text-sm">visibility</span> Preview
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ArXiv Preview Modal (Hidden by default) -->
+                        <div id="arxiv-preview-modal" class="hidden flex-col gap-4 p-6 rounded-xl border border-primary/30 bg-primary/5 relative">
+                            <button id="close-preview-btn" class="absolute top-4 right-4 text-white/50 hover:text-white">
+                                <span class="material-symbols-outlined">close</span>
+                            </button>
+                            <h3 class="text-white text-xl font-bold text-primary" id="preview-title">Paper Title</h3>
+                            <p class="text-white/60 text-sm italic" id="preview-authors">Authors...</p>
+                            <p class="text-white/80 text-sm leading-relaxed max-h-40 overflow-y-auto pr-2" id="preview-abstract">
+                                Abstract goes here...
+                            </p>
+                            <div class="flex justify-end mt-2">
+                                <button id="arxiv-import-btn"
+                                    class="flex items-center justify-center gap-2 h-[44px] px-6 rounded-lg bg-primary text-background-dark font-bold hover:scale-[1.02] transition-transform shadow-md">
+                                    <span class="material-symbols-outlined">download</span> Import to Library
+                                </button>
                             </div>
                         </div>
 
@@ -116,11 +176,9 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 
     <script type="module">
@@ -128,6 +186,7 @@
         import { search } from './js/search.js';
         import { upload } from './js/upload.js';
         import { library } from './js/library.js';
+        import { arxiv } from './js/arxiv.js';
 
         // Check authentication
         if (!auth.isAuthenticated()) {
@@ -135,13 +194,24 @@
         }
 
         // Load user info
-        document.getElementById('username').textContent = auth.getUser()?.fullname || 'User';
+        const userName = auth.getUser()?.name || 'User';
+        document.getElementById('sidebar-username').textContent = userName;
+        document.getElementById('sidebar-initial').textContent = userName.charAt(0).toUpperCase();
+
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            auth.logout();
+        });
 
         // Search functionality
         document.getElementById('search-btn').addEventListener('click', () => {
             const query = document.getElementById('search-input').value;
+            const filterSelect = document.getElementById('search-filter');
+            const field = filterSelect ? filterSelect.value : 'all';
+            
             if (query.trim()) {
                 sessionStorage.setItem('searchQuery', query);
+                sessionStorage.setItem('searchField', field);
                 window.location.href = 'search_results.html';
             }
         });

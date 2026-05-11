@@ -119,5 +119,43 @@ export const auth = {
             console.error('Error during reset password:', error);
             alert('A network error occurred.');
         }
+    },
+
+    // --- New Helper Functions for Dashboard ---
+
+    /**
+     * Checks if the user is currently logged in
+     */
+    isAuthenticated() {
+        return !!localStorage.getItem('token');
+    },
+
+    /**
+     * Retrieves the saved user information
+     */
+    getUser() {
+        const userStr = localStorage.getItem('user');
+        if (!userStr) return null;
+        try {
+            return JSON.parse(userStr);
+        } catch (e) {
+            return null;
+        }
+    },
+
+    /**
+     * Retrieves the JWT Token
+     */
+    getToken() {
+        return localStorage.getItem('token');
+    },
+
+    /**
+     * Logs the user out and redirects to signin
+     */
+    logout() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = 'signin.html';
     }
 };
