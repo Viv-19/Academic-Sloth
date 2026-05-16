@@ -10,9 +10,26 @@ const app = express();
 // Serve Frontend Static Files
 app.use(express.static(path.join(__dirname, '../../Sloth_frontend/public')));
 
+// 🎓 LEARNING MOMENT: Serving a private directory as static files.
+// __dirname here = Sloth_backend/src/
+// So '../uploads' resolves to Sloth_backend/uploads/ — where Multer saves files.
+// '../../uploads' would be WRONG — it goes too far up to the project root!
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
 // --- Middlewares ---
 // 1. Helmet helps secure Express apps by setting HTTP response headers.
-app.use(helmet());
+//    We relax some defaults so our <iframe> PDF viewer works correctly.
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+            'frame-src': ["'self'", 'blob:', 'data:'],
+            'frame-ancestors': ["'self'"],
+        },
+    },
+    crossOriginEmbedderPolicy: false,  // Required for iframe PDF rendering
+    crossOriginResourcePolicy: { policy: 'same-origin' },
+}));
 
 // 2. CORS (Cross-Origin Resource Sharing) allows our frontend to communicate with this backend.
 app.use(cors());
@@ -30,11 +47,15 @@ app.use(express.urlencoded({ extended: true }));
 const authRoutes = require('./routes/authRoutes');
 const documentRoutes = require('./routes/documentRoutes');
 const arxivRoutes = require('./routes/arxivRoutes');
+const aiRoutes = require('./routes/aiRoutes'); // 🤖 AI / RAG Proxy Routes
 
 // Mount routes
 app.use('/api/auth', authRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/arxiv', arxivRoutes);
+// 🤖 AI routes: proxies to Python AI service (http://localhost:8000)
+// Protected by JWT — the browser only ever talks to Node, never Python directly
+app.use('/api/ai', aiRoutes);
 
 // A simple Health Check endpoint. This is standard in production to let load balancers
 // or Docker know that the service is alive and running successfully.

@@ -5,17 +5,32 @@ const upload = require('../middlewares/uploadMiddleware');
 
 const router = express.Router();
 
-// Apply the 'protect' middleware to ALL routes in this file.
-// This means you MUST be logged in (have a valid JWT token) to upload or view documents.
+// ─────────────────────────────────────────────────────────────────────────────
+// INTERNAL ROUTE (no JWT required) — must be registered BEFORE router.use(protect)
+//
+// 🎓 LEARNING: Express processes middleware and routes in the ORDER they are
+// registered. `router.use(protect)` applies to every route defined AFTER it.
+// By placing this PATCH route BEFORE the router.use(protect) call, it bypasses
+// authentication entirely.
+//
+// This is the standard pattern for internal service-to-service routes:
+// the Python AI service has no user JWT, but it needs to update document status.
+//
+// In production, you'd secure this with a shared internal secret:
+//   if (req.headers['x-internal-secret'] !== process.env.INTERNAL_SECRET) return 401
+// ─────────────────────────────────────────────────────────────────────────────
+router.patch('/:id/status', documentController.updateDocumentStatus);
+
+// Apply JWT protection to all routes defined AFTER this line
 router.use(protect);
 
 // POST /api/documents/upload
-// The upload.single('pdfFile') middleware intercepts the request, grabs the file named "pdfFile",
-// saves it to disk, and attaches the file info to `req.file` before passing it to our controller.
 router.post('/upload', upload.single('pdfFile'), documentController.uploadDocument);
 
-// GET /api/documents
-// Retrieves a list of all documents uploaded by the user
+// GET /api/documents — list all user's documents
 router.get('/', documentController.getMyDocuments);
+
+// GET /api/documents/:id — get one document (ownership verified in controller)
+router.get('/:id', documentController.getDocumentById);
 
 module.exports = router;

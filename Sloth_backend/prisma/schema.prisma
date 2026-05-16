@@ -32,7 +32,7 @@ model Document {
   id          String   @id @default(uuid())
   title       String   // e.g. "Attention Is All You Need"
   file_path   String   // The path where the PDF is stored (e.g. "uploads/12345.pdf")
-  status      String   @default("pending") // "pending", "processing", "processed", "failed"
+  status      String   @default("pending") // "pending", "indexed", "failed"
   
   source      String   @default("local") // "local" or "arxiv"
   arxiv_id    String?  // The unique arXiv identifier if fetched from arXiv

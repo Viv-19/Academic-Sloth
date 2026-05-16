@@ -1,0 +1,225 @@
+# Production-Grade RAG Architecture for Academic Sloth
+
+## What is RAG, and Why This Architecture?
+
+**RAG (Retrieval-Augmented Generation)** is the technique where instead of just asking an LLM a question and hoping it knows the answer from training data, you first *retrieve* the relevant chunks of text from your own document, and then *inject* that context into the LLM's prompt. This means the AI only answers from *your* document — no hallucinations, and it can cite the exact source.
+
+The architecture below is what companies like **Notion AI**, **Perplexity**, and **Anthropic** use in production.
+
+---
+
+## 🏗️ The 3 Phases of Production RAG
+
+```
+PHASE 1: INGESTION           PHASE 2: RETRIEVAL           PHASE 3: GENERATION
+(Offline / Background)       (Real-time on query)         (Real-time on query)
+
+PDF Upload                   User asks question           LangGraph Agent
+    ↓                            ↓                            ↓
+Text Extraction              Embed the question           Retrieve top-K chunks
+(PyMuPDF)                    (same embedding model)       + Re-rank with cross-encoder
+    ↓                            ↓                            ↓
+Semantic Chunking            Vector similarity search     Build prompt + Call LLM
+(Sentence-aware splits)      (ChromaDB / pgvector)        (Google Gemini / Groq)
+    ↓                            ↓                            ↓
+Embedding Generation         Return top chunks            Stream response back
+(Google text-embedding-004)  + page numbers               + return source locations
+    ↓                            ↓                            ↓
+Store in Vector DB           Ready for LLM               Frontend highlights lines
+(ChromaDB / pgvector)
+```
+
+---
+
+## Phase 1: Document Ingestion Pipeline (The "Index" Phase)
+
+This runs **once** when a user uploads a paper. It is a background job.
+
+### Step 1.1 — PDF Text Extraction
+**Tool:** `PyMuPDF` (Python library, also called `fitz`)
+- Extracts text **page by page**, preserving the **page number** of every sentence.
+- This is critical! Without page numbers, we can't tell the frontend *where* to highlight.
+- Also extracts metadata (title, authors if embedded in the PDF).
+
+> 🎓 **Learning:** This is why we need a **Python AI Service** — Node.js has no reliable PDF-to-text libraries. Python's ecosystem for AI/ML tasks is far superior.
+
+### Step 1.2 — Semantic Chunking (The most critical step)
+**Bad Practice (Naive):** Split text every 500 characters. This cuts sentences in half.
+**Industry Best Practice:** Use **Semantic Chunking** — split on sentence/paragraph boundaries.
+
+**Strategy:** 
+- Split into "chunks" of ~300-500 tokens (not characters!) with a **20% overlap** between adjacent chunks.
+- Overlap prevents the answer from being split across two chunks.
+- Each chunk stores metadata: `{ page_number, doc_id, chunk_index, text }`.
+
+### Step 1.3 — Embedding Generation
+**Tool:** `Google text-embedding-004` or `sentence-transformers` (local, free)
+- Every chunk of text is passed through an **embedding model**.
+- The output is a **dense vector** (a list of ~768 numbers) that represents the *meaning* of that chunk.
+- Similar chunks will have vectors close to each other in space (high cosine similarity).
+
+> 🎓 **Learning:** This is the mathematical magic of RAG. Two sentences like "The model achieved great performance" and "Excellent results were obtained" will have nearly identical vectors, even though no words match!
+
+### Step 1.4 — Vector Database Storage
+**Tool:** `ChromaDB` (local, free, perfect for this project) OR `pgvector` (Postgres extension)
+- We store every chunk's vector + its metadata.
+- Each document gets its own **collection** in ChromaDB (namespace isolation).
+- This allows us to search *only within the relevant paper* when the user is reading it.
+
+> 🎓 **Learning:** A Vector DB is not like SQL. There is no `WHERE text = "attention"`. Instead, you query with `"find the 5 vectors most similar to this question vector"`. This is Approximate Nearest Neighbor (ANN) search.
+
+---
+
+## Phase 2: Retrieval (On Every User Question)
+
+### Step 2.1 — Embed the Query
+The user's question is embedded using the **exact same model** used for chunks. We get a query vector.
+
+### Step 2.2 — Similarity Search
+We search ChromaDB for the top `K=15` most similar chunks to the query vector. We use **cosine similarity**.
+
+### Step 2.3 — Re-Ranking (Production Differentiator)
+**Basic RAG** just returns those 15 chunks. **Production RAG** adds a second step:
+
+**Tool:** `cross-encoder/ms-marco-MiniLM-L-6-v2` (local, free)
+- A Cross-Encoder takes the query + each chunk as a *pair* and scores their relevance.
+- It's slower than the vector search, but far more accurate.
+- We re-order the 15 chunks by this score and take the **top 5**.
+
+> 🎓 **Learning:** This 2-stage retrieve-then-rerank pipeline is called **RAG with Re-ranking**. It's used by Google, Cohere, and most production LLM apps because it dramatically improves precision without being too slow.
+
+---
+
+## Phase 3: Generation with LangGraph (The "Brain")
+
+### Step 3.1 — LangGraph Multi-Agent Orchestration
+**Why LangGraph?** For simple RAG, a single LLM call is enough. But for an academic assistant, we want smarter behavior. LangGraph lets us define a **state machine** of agents.
+
+**Proposed Graph:**
+```
+User Question
+      ↓
+[Router Agent] — Is this a factual question or a request for summary/analysis?
+      ↓                    ↓
+[Retrieval Agent]   [Summarization Agent]
+      ↓
+[Grounding Agent] — Checks if retrieved chunks actually support the answer
+      ↓
+[Response Agent] — Formats final answer with source citations
+      ↓
+Stream to Frontend
+```
+
+### Step 3.2 — The Prompt (Grounded Generation)
+```
+You are an expert research assistant analyzing a scientific paper.
+Use ONLY the following excerpts from the paper to answer the question.
+Do not use any outside knowledge.
+
+--- PAPER EXCERPTS ---
+[Chunk 1, Page 3]: "..."
+[Chunk 2, Page 7]: "..."
+[Chunk 3, Page 5]: "..."
+----------------------
+
+USER QUESTION: "What is the main contribution of this paper?"
+
+Answer based only on the excerpts. At the end of your answer, include a JSON block:
+{"sources": [{"chunk_index": 0, "page": 3}, {"chunk_index": 2, "page": 5}]}
+```
+
+The JSON at the end is how the frontend knows **which lines to highlight in blue**!
+
+### Step 3.3 — LLM Choice
+- **Primary:** `Google Gemini 1.5 Flash` via the Gemini API (free tier, very fast)
+- **Fallback:** `Groq + Llama 3` (extremely fast inference, free tier)
+- **Response streaming** via Server-Sent Events (SSE) so the answer appears word-by-word.
+
+---
+
+## 🖥️ Full System Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        FRONTEND (HTML/JS)                        │
+│   Paper Review UI → Chat Input → Stream Response → Highlight    │
+└────────────────────────┬───────────────────────────────────────┘
+                         │ HTTP / SSE (Streaming)
+┌────────────────────────▼───────────────────────────────────────┐
+│                    NODE.JS BACKEND (Express)                     │
+│   POST /api/chat  →  Proxy to Python AI Service                 │
+│   POST /api/ingest →  Trigger background ingestion              │
+└───────────────┬────────────────────────────────────────────────┘
+                │ Internal HTTP (localhost:8000)
+┌───────────────▼────────────────────────────────────────────────┐
+│               PYTHON AI SERVICE (FastAPI)                        │
+│                                                                  │
+│   /ingest  → PyMuPDF → Chunker → Embedder → ChromaDB           │
+│   /chat    → Embedder → ChromaDB Search → Re-Ranker → LangGraph│
+│             → Gemini/Groq → SSE Stream back                     │
+└───────────────────────────┬────────────────────────────────────┘
+                             │
+┌───────────────────────────▼────────────────────────────────────┐
+│                     CHROMADB (Vector Store)                      │
+│   Collection per Document — Chunks + Embeddings + Metadata      │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Tech Stack for the RAG System
+
+| Component | Tool | Why |
+|---|---|---|
+| Python Web Framework | **FastAPI** | Async, streaming support, auto-docs |
+| PDF Extraction | **PyMuPDF (fitz)** | Page-accurate, handles complex layouts |
+| Chunking | **LangChain TextSplitter** | Battle-tested sentence-boundary chunking |
+| Embedding Model | **Google text-embedding-004** | Free, 768-dim, excellent quality |
+| Vector DB | **ChromaDB** | Local, zero-config, perfect for this scale |
+| Re-Ranker | **sentence-transformers** | Local, free, no API key needed |
+| LLM Orchestration | **LangGraph** | Production multi-agent state machine |
+| LLM | **Gemini 1.5 Flash / Groq** | Free tiers, fast, streaming support |
+| Node ↔ Python Bridge | **HTTP (axios)** | Simple, clean separation of concerns |
+
+---
+
+## Proposed Implementation Phases
+
+### ✅ Phase A: Python AI Service Setup
+1. Create `Sloth_ai/` directory.
+2. Set up `FastAPI` + `requirements.txt`.
+3. Implement `/health` endpoint.
+4. Wire the Node backend to proxy `/api/chat` and `/api/ingest` to this service.
+
+### ✅ Phase B: Ingestion Pipeline
+1. Implement `/ingest` endpoint.
+2. Text extraction with PyMuPDF.
+3. Semantic chunking with LangChain.
+4. Embedding with Google Generative AI SDK.
+5. Store in ChromaDB with metadata.
+6. Update document `status` in Postgres to `"indexed"`.
+
+### ✅ Phase C: Basic RAG (Chat Endpoint)
+1. Implement `/chat` endpoint.
+2. Embed the user question.
+3. Vector search in ChromaDB.
+4. Re-rank with cross-encoder.
+5. Build prompt + call Gemini.
+6. Stream the response back via SSE.
+
+### ✅ Phase D: LangGraph Agent Integration
+1. Implement the Router Agent.
+2. Implement the Grounding Agent.
+3. Wire the full graph.
+
+### ✅ Phase E: Frontend Source Highlighting
+1. Parse the `{"sources": [...]}` JSON from the AI response.
+2. Use `history.pushState` to update the PDF URL with `#page=X`.
+3. Apply the `.rag-highlight` CSS class we already built.
+
+---
+
+## Open Questions for You
+1. **LLM Choice:** Do you have a Google AI Studio API key (free)? Gemini 1.5 Flash is the best free option. If not, Groq (also free) with Llama 3 is an excellent alternative.
+2. **Python installed?** The AI service requires Python 3.10+. Is it available on your system?
+3. **Scale expectation:** ChromaDB running locally is perfect for a capstone/demo. Should we plan for a cloud-hosted vector DB (like Pinecone free tier) for the final deployment, or keep it local?

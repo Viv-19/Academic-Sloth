@@ -41,7 +41,37 @@ async function getUserDocuments(userId) {
     });
 }
 
+/**
+ * Retrieves a single document by its ID, confirming it belongs to the user.
+ * 🎓 LEARNING MOMENT: We always verify that the requesting user OWNS the document.
+ * This prevents a user from fetching another user's paper by guessing an ID!
+ * @param {string} docId - The document's unique ID
+ * @param {string} userId - The ID of the user requesting it
+ */
+async function getDocumentById(docId, userId) {
+    const document = await prisma.document.findFirst({
+        where: {
+            id: docId,
+            user_id: userId // Security check: must belong to this user!
+        }
+    });
+    return document;
+}
+
+/**
+ * Updates a document's status field.
+ * Called after ingestion completes (or fails) in the Python AI service.
+ */
+async function updateStatus(docId, status) {
+    return await prisma.document.update({
+        where: { id: docId },
+        data: { status }
+    });
+}
+
 module.exports = {
     createDocumentRecord,
-    getUserDocuments
+    getUserDocuments,
+    getDocumentById,
+    updateStatus
 };

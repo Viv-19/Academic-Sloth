@@ -1,0 +1,40 @@
+# ============================================================
+# Academic Sloth — Python AI Service Dependencies
+# Install with: pip install -r requirements.txt
+# ============================================================
+
+# --- Web Framework ---
+fastapi
+uvicorn[standard]          # ASGI server (like nodemon for Python)
+
+# --- HTTP & Validation ---
+httpx                      # Async HTTP client (for calling Node.js backend)
+pydantic
+pydantic-settings          # Reads .env into typed config
+python-dotenv
+
+# --- PDF Processing ---
+# Pre-built binary wheel — works on Windows without Visual Studio
+pymupdf
+
+# --- LLM: Groq (free tier, fast inference) ---
+# Supports: llama-3.3-70b-versatile, llama-3.1-8b-instant, gemma2-9b-it, etc.
+groq
+
+# --- Local Embeddings (no API key, runs on CPU) ---
+# sentence-transformers downloads the model from HuggingFace on first run
+sentence-transformers      # Includes PyTorch and HuggingFace transformers
+
+# --- LangChain (text splitting + utilities) ---
+langchain
+langchain-community
+langchain-text-splitters   # RecursiveCharacterTextSplitter for semantic chunking
+
+# --- Vector Database (local, zero config) ---
+chromadb
+
+# --- LangGraph (Phase D — multi-agent orchestration) ---
+langgraph
+
+# --- Utilities ---
+python-multipart           # Required for file uploads in FastAPI

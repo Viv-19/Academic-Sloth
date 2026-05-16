@@ -37,7 +37,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Python (for Sloth_ai_service later)
 __pycache__/
 *.py[cod]
 *$py.class
@@ -45,3 +44,7 @@ __pycache__/
 venv/
 env/
 .pytest_cache/
+
+# Python AI Service — local data (never commit these)
+Sloth_ai_service/data/          # ChromaDB vectors + downloaded embedding models
+Sloth_ai_service/.env           # Groq API keys

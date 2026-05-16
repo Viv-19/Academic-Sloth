@@ -118,7 +118,4 @@ export const arxiv = {
     }
 };
 
-// Auto-initialize when the DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    arxiv.init();
-});
+// Exported — the importing page calls arxiv.init() when ready.
