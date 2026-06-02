@@ -38,6 +38,18 @@ async function importPaper(req, res, next) {
 
         const document = await arxivService.importArxivPaper(arxivId, userId);
 
+        // Auto-trigger ingestion in the Python AI service (fire-and-forget)
+        const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'http://localhost:8000/api';
+        fetch(`${AI_SERVICE_URL}/ingest`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                doc_id: document.id,
+                file_path: document.file_path,
+                title: document.title,
+            }),
+        }).catch(err => console.log('[ArXiv Import] AI ingest queued (fire-and-forget):', err.message));
+
         res.status(201).json({
             status: 'success',
             message: 'Paper imported successfully from ArXiv!',

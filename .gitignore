@@ -48,3 +48,6 @@ env/
 # Python AI Service — local data (never commit these)
 Sloth_ai_service/data/          # ChromaDB vectors + downloaded embedding models
 Sloth_ai_service/.env           # Groq API keys
+
+# Node Backend Uploads
+Sloth_backend/uploads/          # User-uploaded or imported PDF research papers

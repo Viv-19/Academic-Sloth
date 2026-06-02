@@ -1,7 +1,8 @@
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
+
 const app = require('./app');
 
-// You can eventually replace this by reading from process.env.PORT
-// We'll set up the .env file loading in the next step.
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
