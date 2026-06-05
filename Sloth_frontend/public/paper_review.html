@@ -16,6 +16,9 @@
         body::-webkit-scrollbar-track { background: #221910; }
         body::-webkit-scrollbar-thumb { background-color: #ec7f13; border-radius: 20px; }
 
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        .animate-float { animation: float 4s ease-in-out infinite; }
+
         /* ============================================================
            COLLAPSIBLE SIDEBAR
            Smooth width transition from 300px → 72px (icon-only mode).
@@ -82,12 +85,14 @@
     <!-- ===============================================================
          LEFT SIDEBAR — Collapsible, with paper list + upload
     =============================================================== -->
-    <aside id="sidebar" class="h-full flex flex-col bg-[#1c140d] border-r border-white/5 shrink-0 z-20 shadow-2xl">
+    <aside id="sidebar" class="h-full flex flex-col bg-background-dark/80 backdrop-blur-xl border-r border-white/5 shrink-0 z-20 shadow-[4px_0_24px_rgba(0,0,0,0.5)]">
 
         <!-- Logo + Collapse Button -->
         <div class="flex items-center justify-between p-4 border-b border-white/5 min-h-[64px]">
-            <a href="dashboard.html" class="flex items-center gap-3 overflow-hidden">
-                <img src="assets/images/Academic Sloth logo.png" class="h-8 w-8 object-contain shrink-0" alt="Logo" />
+            <a href="dashboard.html" class="flex items-center gap-3 overflow-hidden group">
+                <div class="animate-float">
+                    <img src="assets/images/Academic Sloth logo.png" class="h-8 w-8 object-contain shrink-0 drop-shadow-[0_0_8px_rgba(236,127,19,0.5)] group-hover:scale-105 transition-transform" alt="Logo" />
+                </div>
                 <h2 id="brand-name" class="text-white text-base font-bold tracking-tight sidebar-label">Academic Sloth</h2>
             </a>
             <button id="sidebar-toggle" title="Collapse sidebar" class="p-2 rounded-lg text-white/40 hover:text-white hover:bg-white/5 transition-colors shrink-0 ml-1">

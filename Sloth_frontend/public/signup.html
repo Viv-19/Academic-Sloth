@@ -28,6 +28,16 @@
             border-radius: 20px;
             border: 3px solid #221910;
         }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
     </style>
     <script>
         tailwind.config = {
@@ -37,94 +47,85 @@
     </script>
 </head>
 
-<body class="font-display">
-    <div
-        class="relative flex min-h-screen w-full flex-col bg-background-light dark:bg-background-dark overflow-x-hidden">
-        <div class="layout-container flex h-full grow flex-col">
-            <div class="px-4 md:px-10 lg:px-20 xl:px-40 flex flex-1 justify-center py-5">
-                <div class="layout-content-container flex flex-col max-w-[520px] flex-1">
+<body class="font-display bg-background-dark m-0 p-0 overflow-x-hidden">
+    <div class="relative flex min-h-screen w-full flex-col items-center justify-center p-4">
+        
+        <!-- Background Image -->
+        <div class="absolute inset-0 z-0 bg-cover bg-center" style="background-image: linear-gradient(rgba(34, 25, 16, 0.7), rgba(34, 25, 16, 0.9)), url('assets/images/background image 2.png');"></div>
 
-                    <!-- TopNavBar -->
-                    <header class="flex items-center justify-between border-b border-white/10 px-4 md:px-10 py-3 mb-8">
-                        <a href="index.html" class="flex items-center gap-4 text-white">
-                            <div class="size-6 text-primary">
-                                <svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M44 11.2727C44 14.0109 39.8386 16.3957 33.69 17.6364C39.8386 18.877 44 21.2618 44 24C44 26.7382 39.8386 29.123 33.69 30.3636C39.8386 31.6043 44 33.9891 44 36.7273C44 40.7439 35.0457 44 24 44C12.9543 44 4 40.7439 4 36.7273C4 33.9891 8.16144 31.6043 14.31 30.3636C8.16144 29.123 4 26.7382 4 24C4 21.2618 8.16144 18.877 14.31 17.6364C8.16144 16.3957 4 14.0109 4 11.2727C4 7.25611 12.9543 4 24 4C35.0457 4 44 7.25611 44 11.2727Z"
-                                        fill="currentColor"></path>
-                                </svg>
-                            </div>
-                            <h2 class="text-white text-xl font-bold">Academic Sloth</h2>
-                        </a>
-                    </header>
+        <!-- Form Container -->
+        <div class="relative z-10 flex flex-col w-full max-w-[520px] p-8 md:p-12 rounded-3xl border border-white/10 bg-black/40 backdrop-blur-md shadow-2xl my-8">
+            
+            <!-- Logo & Title -->
+            <a href="index.html" class="flex flex-col items-center gap-4 text-white mb-8 group">
+                <div class="animate-float">
+                    <img src="assets/images/Academic Sloth logo.png" class="h-16 w-auto object-contain drop-shadow-[0_0_15px_rgba(236,127,19,0.4)] group-hover:scale-105 transition-transform duration-300" alt="Academic Sloth Logo" />
+                </div>
+                <h2 class="text-white text-2xl font-bold tracking-tight">Academic Sloth</h2>
+            </a>
 
-                    <!-- Sign Up Form -->
-                    <div class="flex flex-col gap-6 px-4 py-10">
-                        <div class="text-center">
-                            <h1 class="text-white text-3xl font-bold mb-2">Create Your Account</h1>
-                            <p class="text-white/70 text-base">Start your research journey with Academic Sloth</p>
-                        </div>
+            <!-- Sign Up Form -->
+            <div class="flex flex-col gap-6">
+                <div class="text-center">
+                    <h1 class="text-white text-3xl font-bold mb-2">Create Your Account</h1>
+                    <p class="text-white/70 text-base">Start your research journey with Academic Sloth</p>
+                </div>
 
-                        <form id="signupForm" class="flex flex-col gap-4 mt-4">
-                            <div class="flex flex-col gap-2">
-                                <label class="text-white text-sm font-medium" for="fullname">Full Name</label>
-                                <input type="text" id="fullname" name="fullname" required
-                                    class="min-h-[44px] w-full rounded-lg border border-white/20 bg-white/5 px-4 text-white placeholder:text-white/50 focus:border-primary focus:outline-none transition-colors"
-                                    placeholder="John Doe" />
-                            </div>
-
-                            <div class="flex flex-col gap-2">
-                                <label class="text-white text-sm font-medium" for="email">Email</label>
-                                <input type="email" id="email" name="email" required
-                                    class="min-h-[44px] w-full rounded-lg border border-white/20 bg-white/5 px-4 text-white placeholder:text-white/50 focus:border-primary focus:outline-none transition-colors"
-                                    placeholder="john@university.edu" />
-                            </div>
-
-                            <div class="flex flex-col gap-2">
-                                <label class="text-white text-sm font-medium" for="institution">Institution
-                                    (Optional)</label>
-                                <input type="text" id="institution" name="institution"
-                                    class="min-h-[44px] w-full rounded-lg border border-white/20 bg-white/5 px-4 text-white placeholder:text-white/50 focus:border-primary focus:outline-none transition-colors"
-                                    placeholder="Your University" />
-                            </div>
-
-                            <div class="flex flex-col gap-2">
-                                <label class="text-white text-sm font-medium" for="password">Password</label>
-                                <input type="password" id="password" name="password" required
-                                    class="min-h-[44px] w-full rounded-lg border border-white/20 bg-white/5 px-4 text-white placeholder:text-white/50 focus:border-primary focus:outline-none transition-colors"
-                                    placeholder="••••••••" />
-                            </div>
-
-                            <div class="flex flex-col gap-2">
-                                <label class="text-white text-sm font-medium" for="confirm_password">Confirm
-                                    Password</label>
-                                <input type="password" id="confirm_password" name="confirm_password" required
-                                    class="min-h-[44px] w-full rounded-lg border border-white/20 bg-white/5 px-4 text-white placeholder:text-white/50 focus:border-primary focus:outline-none transition-colors"
-                                    placeholder="••••••••" />
-                            </div>
-
-                            <div class="flex items-start gap-3 mt-2">
-                                <input type="checkbox" id="terms" name="terms" required
-                                    class="mt-1 h-4 w-4 rounded border-white/20 bg-white/5 text-primary focus:ring-primary" />
-                                <label for="terms" class="text-white/80 text-sm">
-                                    I agree to the <a href="#" class="text-primary hover:underline">Terms of Service</a>
-                                    and <a href="#" class="text-primary hover:underline">Privacy Policy</a>
-                                </label>
-                            </div>
-
-                            <button type="submit"
-                                class="flex min-h-[44px] w-full cursor-pointer items-center justify-center rounded-lg px-4 bg-primary text-background-dark text-base font-bold transition-transform hover:scale-[1.02] shadow-md mt-4">
-                                <span class="truncate">Create Account</span>
-                            </button>
-
-                            <p class="text-center text-white/60 text-sm mt-2">
-                                Already have an account? <a href="signin.html"
-                                    class="text-primary hover:underline font-medium">Sign In</a>
-                            </p>
-                        </form>
+                <form id="signupForm" class="flex flex-col gap-4 mt-2">
+                    <div class="flex flex-col gap-2">
+                        <label class="text-white text-sm font-medium" for="fullname">Full Name</label>
+                        <input type="text" id="fullname" name="fullname" required
+                            class="min-h-[44px] w-full rounded-lg border border-white/20 bg-white/5 px-4 text-white placeholder:text-white/50 focus:border-primary focus:ring-1 focus:ring-primary/50 focus:outline-none transition-colors"
+                            placeholder="John Doe" />
                     </div>
 
-                </div>
+                    <div class="flex flex-col gap-2">
+                        <label class="text-white text-sm font-medium" for="email">Email</label>
+                        <input type="email" id="email" name="email" required
+                            class="min-h-[44px] w-full rounded-lg border border-white/20 bg-white/5 px-4 text-white placeholder:text-white/50 focus:border-primary focus:ring-1 focus:ring-primary/50 focus:outline-none transition-colors"
+                            placeholder="john@university.edu" />
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <label class="text-white text-sm font-medium" for="institution">Institution (Optional)</label>
+                        <input type="text" id="institution" name="institution"
+                            class="min-h-[44px] w-full rounded-lg border border-white/20 bg-white/5 px-4 text-white placeholder:text-white/50 focus:border-primary focus:ring-1 focus:ring-primary/50 focus:outline-none transition-colors"
+                            placeholder="Your University" />
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <label class="text-white text-sm font-medium" for="password">Password</label>
+                        <input type="password" id="password" name="password" required
+                            class="min-h-[44px] w-full rounded-lg border border-white/20 bg-white/5 px-4 text-white placeholder:text-white/50 focus:border-primary focus:ring-1 focus:ring-primary/50 focus:outline-none transition-colors"
+                            placeholder="••••••••" />
+                    </div>
+
+                    <div class="flex flex-col gap-2">
+                        <label class="text-white text-sm font-medium" for="confirm_password">Confirm Password</label>
+                        <input type="password" id="confirm_password" name="confirm_password" required
+                            class="min-h-[44px] w-full rounded-lg border border-white/20 bg-white/5 px-4 text-white placeholder:text-white/50 focus:border-primary focus:ring-1 focus:ring-primary/50 focus:outline-none transition-colors"
+                            placeholder="••••••••" />
+                    </div>
+
+                    <div class="flex items-start gap-3 mt-2">
+                        <input type="checkbox" id="terms" name="terms" required
+                            class="mt-1 h-4 w-4 rounded border-white/20 bg-white/5 text-primary focus:ring-primary" />
+                        <label for="terms" class="text-white/80 text-sm">
+                            I agree to the <a href="#" class="text-primary hover:underline transition-colors">Terms of Service</a>
+                            and <a href="#" class="text-primary hover:underline transition-colors">Privacy Policy</a>
+                        </label>
+                    </div>
+
+                    <button type="submit"
+                        class="flex min-h-[48px] w-full cursor-pointer items-center justify-center rounded-lg px-4 bg-primary text-background-dark text-base font-bold transition-all duration-300 hover:scale-[1.02] shadow-[0_0_15px_rgba(236,127,19,0.3)] hover:shadow-[0_0_25px_rgba(236,127,19,0.6)] mt-4">
+                        <span class="truncate">Create Account</span>
+                    </button>
+
+                    <p class="text-center text-white/60 text-sm mt-2">
+                        Already have an account? <a href="signin.html"
+                            class="text-primary hover:underline font-medium transition-colors">Sign In</a>
+                    </p>
+                </form>
             </div>
         </div>
     </div>
