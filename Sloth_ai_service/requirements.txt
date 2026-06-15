@@ -38,3 +38,9 @@ langgraph
 
 # --- Utilities ---
 python-multipart           # Required for file uploads in FastAPI
+
+# --- Production RAG + Agents Additions ---
+langchain-groq             # Required for LangGraph chat model compatibility
+langchain-core             # Core components for custom LLM wrappers
+rank-bm25                  # Keyword retrieval for Hybrid Search
+tiktoken                   # Token counting for prompt budgeting

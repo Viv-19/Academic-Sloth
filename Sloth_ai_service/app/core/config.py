@@ -39,6 +39,28 @@ class Settings(BaseSettings):
     TOP_K_RETRIEVE: int = 15
     TOP_K_RERANK: int = 5
 
+    # --- Hybrid Retrieval (BM25 + Vector Fusion) ---
+    BM25_WEIGHT: float = 0.4        # Weight for keyword-based BM25 retrieval
+    VECTOR_WEIGHT: float = 0.6      # Weight for vector similarity retrieval
+    HYBRID_TOP_K: int = 20          # Total candidates from hybrid retrieval before rerank
+
+    # --- Conversation Memory ---
+    CONVERSATION_WINDOW_SIZE: int = 10   # Number of turns to keep in sliding window
+
+    # --- Grounding Guard ---
+    GROUNDING_THRESHOLD: float = 0.3     # Min cross-encoder score for a claim to be "grounded"
+    GROUNDING_ENABLED: bool = True       # Toggle grounding checks on/off
+
+    # --- Agent Configuration (LangGraph) ---
+    ROUTER_MODEL: str = ""               # Model for router agent (empty = use fallback model)
+    AGENT_MODEL: str = ""                # Model for specialized agents (empty = use primary model)
+    AGENT_MAX_STEPS: int = 5             # Max steps in the LangGraph state machine
+    AGENT_ENABLED: bool = True           # Toggle agentic pipeline on/off (False = basic RAG)
+
+    # --- Token Budgets ---
+    MAX_CONTEXT_TOKENS: int = 4096       # Max tokens for context chunks in prompt
+    MAX_QUESTION_LENGTH: int = 2000      # Max characters for user question
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"

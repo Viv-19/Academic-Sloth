@@ -1,103 +1,68 @@
-# 🎓 Academic Sloth — AI Research Assistant
+# Academic Sloth 🦥
 
-Academic Sloth is a production-grade RAG (Retrieval-Augmented Generation) pipeline designed to ingest, process, and analyze academic papers. It features a high-performance Python AI service, a robust Node.js backend, and a modern web frontend.
+Academic Sloth is a comprehensive, AI-powered research assistant platform designed to help students, researchers, and academics seamlessly discover, read, and analyze academic papers. It features a custom **Agentic RAG (Retrieval-Augmented Generation)** pipeline that acts as an intelligent research partner.
 
----
-
-## 🏗️ System Architecture
-
-- **`Sloth_frontend/`**: Static HTML/JS frontend with glassmorphism UI.
-- **`Sloth_backend/`**: Node.js (Express) server handling users, file uploads, and logic orchestration.
-- **`Sloth_ai_service/`**: Python (FastAPI) engine for PDF processing, embedding, and LLM chat (RAG).
-- **`database`**: PostgreSQL (via Prisma ORM).
-- **`vector_db`**: ChromaDB (Local vector storage).
+## 🚀 Features
+- **Paper Library Management**: Upload your own PDF papers or search and fetch directly from arXiv.
+- **Agentic AI Chat**: Ask highly specific or broad questions about a paper. The LangGraph-powered AI backend uses 5 specialized agents (Summary, Factual, Deep Dive, Compare, Critique) to properly analyze the document.
+- **Live "Thinking" Stream**: Real-time progress updates directly in the chat UI so you know exactly what the AI is doing.
+- **Grounding Guard**: Ensures the AI doesn't hallucinate. It mathematically verifies that the generated claims match the original source text.
+- **Citation Engine**: Provides clickable citations back to the exact page of the PDF where the answer was found.
 
 ---
 
-## 🛠️ Prerequisites
+## 🏗️ Architecture Stack
 
-Before you begin, ensure you have the following installed:
-- **Node.js** (v18+)
-- **Python** (v3.10+)
-- **PostgreSQL** (Running locally or on a server)
-- **Groq API Key** (Get one for free at [console.groq.com](https://console.groq.com))
+The project is split into three main components:
+
+### 1. `Sloth_frontend` (Vanilla HTML/JS/CSS)
+A lightweight, fast, and highly interactive user interface powered by TailwindCSS. It connects securely to the Node.js backend.
+
+### 2. `Sloth_backend` (Node.js & Express)
+The primary API gateway. It handles user authentication (JWT), email OTP verification, database interactions (Prisma/PostgreSQL), and serves the frontend static files. It also proxies all AI-related chat requests over to the Python service.
+
+### 3. `Sloth_ai_service` (Python & FastAPI)
+The brain of the platform. This microservice uses LangChain and LangGraph to orchestrate complex RAG workflows, manage conversational memory, index documents into ChromaDB (Vector Database), and interface with LLMs (Groq).
 
 ---
 
-## 🚀 Setup & Installation
+## 💻 How to Run Locally
 
-### 1. Database Setup
-Create a PostgreSQL database named `researchos`.
+To get the full application running, you need to start **both** the Node.js backend and the Python AI service. (The Node.js backend automatically serves the frontend).
 
-### 2. Environment Configuration
-Create a `.env` file in the **root** directory (for Node.js) and in `Sloth_ai_service/` (for Python).
-
-**Root `.env` (Node.js):**
-```env
-DATABASE_URL="postgresql://user:password@localhost:5432/researchos?schema=public"
-JWT_SECRET="your_secure_secret_here"
-EMAIL_USER="your-email@gmail.com"
-EMAIL_PASS="your-app-password"
-```
-
-**`Sloth_ai_service/.env` (Python):**
-```env
-GROQ_API_KEYS="gsk_your_key_1,gsk_your_key_2"
-GROQ_PRIMARY_MODEL="llama-3.3-70b-versatile"
-EMBEDDING_MODEL="BAAI/bge-small-en-v1.5"
-BACKEND_URL="http://localhost:3000"
-```
-
-### 3. Backend & Frontend Setup (Node.js)
-In the root directory:
-```powershell
-# Install dependencies
+### Step 1: Database Setup
+1. Ensure you have **PostgreSQL** installed and running on your machine.
+2. Open `Sloth_backend/.env` and verify the `DATABASE_URL` matches your local postgres credentials (username, password, and port).
+3. Open a terminal and run the database migrations to build your tables:
+```bash
+cd Sloth_backend
 npm install
-
-# Run database migrations
-npx prisma migrate dev --name init
-
-# Start the backend server
-npm run dev
+npx prisma db push
 ```
-*The backend will run on `http://localhost:3000`.*
 
-### 4. AI Service Setup (Python)
-In the `Sloth_ai_service/` directory:
-```powershell
-# Create a virtual environment
-python -m venv venv
-.\venv\Scripts\activate
+### Step 2: Start the Node.js Backend
+This server will handle logins, file uploads, and host the UI on `localhost:3000`.
+```bash
+cd Sloth_backend
+npm run dev 
+# (Or node src/server.js)
+```
 
+### Step 3: Start the Python AI Service
+This microservice must run simultaneously on `localhost:8000` to process the document indexing and chat queries.
+1. Open a new terminal window.
+2. Ensure you have added your API keys (like `GROQ_API_KEY`) to `Sloth_ai_service/.env`.
+```bash
+cd Sloth_ai_service
 # Install dependencies
 pip install -r requirements.txt
 
-# Start the AI service
+# Start the server (with auto-reload enabled)
 uvicorn app.main:app --reload --port 8000
 ```
-*The AI service will run on `http://localhost:8000`.*
 
----
+### Step 4: Access the App
+Once both servers are running successfully, open your web browser and go to:
+👉 **[http://localhost:3000](http://localhost:3000)**
 
-## 📖 Usage
-
-1. **Start the Backend**: Run `npm run dev` in the root.
-2. **Start the AI Service**: Run `uvicorn` in the `Sloth_ai_service` folder.
-3. **Open the Frontend**: Use a static server (like VS Code Live Server) to open `Sloth_frontend/public/landing_page.html`.
-4. **Upload a Paper**: Sign up/Sign in, go to the library, and upload a PDF.
-5. **Chat with AI**: Once ingested, use the Chat interface to ask questions about the paper.
-
----
-
-## 🧪 Testing
-
-- **Backend Health Check**: `http://localhost:3000/health`
-- **AI Service Docs (Swagger)**: `http://localhost:8000/docs`
-- **AI Service Health**: `http://localhost:8000/api/health`
-
----
-
-## 📝 Project Notes
-- The AI service uses **Groq** for fast inference and **sentence-transformers** for local CPU embeddings.
-- Vector data is stored locally in `Sloth_ai_service/data/chroma_db`.
-- PDF processing is handled by **PyMuPDF**.
+You can sign up for a new account, upload a paper, and start chatting with the AI!

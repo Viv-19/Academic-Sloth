@@ -82,8 +82,28 @@ export const ragChat = {
                         const event = JSON.parse(line.slice(6));
 
                         if (event.type === 'token') {
+                            // When the first token arrives, remove the agent steps UI
+                            const stepList = bubble.querySelector('.agent-steps');
+                            if (stepList) stepList.remove();
+                            
                             fullResponse += event.content;
                             textNode.textContent = this._cleanResponseText(fullResponse);
+                            messagesEl.scrollTop = messagesEl.scrollHeight;
+
+                        } else if (event.type === 'agent_step') {
+                            // Check if steps container exists, otherwise create it
+                            let stepList = bubble.querySelector('.agent-steps');
+                            if (!stepList) {
+                                stepList = document.createElement('div');
+                                stepList.className = 'agent-steps flex flex-col gap-2 mb-2 pb-2 border-b border-white/10';
+                                bubble.insertBefore(stepList, textNode);
+                                textNode.textContent = ''; // Clear the initial placeholder
+                            }
+
+                            const stepItem = document.createElement('div');
+                            stepItem.className = 'flex items-center gap-2 text-primary/80 text-xs font-medium animate-pulse';
+                            stepItem.innerHTML = `<span class="material-symbols-outlined text-[14px]">psychology</span> ${event.content}`;
+                            stepList.appendChild(stepItem);
                             messagesEl.scrollTop = messagesEl.scrollHeight;
 
                         } else if (event.type === 'done') {
