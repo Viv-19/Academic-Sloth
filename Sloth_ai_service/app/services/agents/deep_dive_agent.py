@@ -69,11 +69,14 @@ def run_deep_dive_agent(state: AgentState) -> AgentState:
     state["retrieved_chunks"] = candidates
     state["retrieval_method"] = "hybrid_two_stage"
 
-    # Re-rank the expanded candidate set
-    top_chunks = rerank_chunks(question, candidates)
+    # Re-rank the expanded candidate set. We MUST include the key terms in the
+    # rerank query, otherwise the Cross-Encoder will throw away highly technical 
+    # chunks because they don't exactly match the user's simple question!
+    rerank_query = f"{question} {key_terms} technical details architecture" if key_terms else f"{question} technical details architecture"
+    top_chunks = rerank_chunks(rerank_query, candidates)
 
     # Deep dives get more chunks for comprehensive explanations
-    extended_top_k = min(7, len(candidates))
+    extended_top_k = min(12, len(candidates))
     if len(top_chunks) < extended_top_k:
         remaining = [c for c in candidates if c not in top_chunks]
         top_chunks.extend(remaining[:extended_top_k - len(top_chunks)])

@@ -43,6 +43,9 @@ Your job is to classify the user's question into exactly ONE of these categories
 5. "critique" — Critical analysis, limitations, weaknesses, or future work questions.
    Examples: "What are the limitations?", "What could be improved?", "Any weaknesses?", "Future work?"
 
+6. "conversational" — Casual greetings, small talk, or questions completely unrelated to the paper.
+   Examples: "hi", "hello", "thanks", "how are you", "who are you"
+
 Respond with ONLY a JSON object in this exact format:
 {"intent": "factual", "confidence": 0.9}
 
@@ -139,13 +142,24 @@ def _rule_based_classify(question: str) -> dict | None:
     # Deep dive patterns
     deep_dive_patterns = [
         r"^explain (?:the |how )",
-        r"^(?:describe|detail|elaborate on) (?:the )?(?:method|approach|algorithm|architecture|model|training|process)",
+        r"^(?:describe|detail|elaborate on) (?:the )?(?:method|approach|algorithm|archit[a-z]+|model|training|process)",
         r"(?:in detail|step by step|in depth|technical)",
-        r"^how (?:does|do|did) (?:the |their |this )?(?:model|method|approach|system|architecture|algorithm)",
+        r"^how (?:does|do|did) (?:the |their |this )?(?:model|method|approach|system|archit[a-z]+|algorithm)",
+        r"what is the (?:main |core |primary )?archit[a-z]+",
     ]
     for pattern in deep_dive_patterns:
         if re.search(pattern, q_lower):
             return {"intent": "deep_dive", "confidence": 0.85}
+
+    # Conversational patterns
+    conversational_patterns = [
+        r"^(?:hi|hello|hey|greetings|good morning|good evening|good afternoon)",
+        r"^(?:thanks|thank you|appreciate it|awesome|great|good job)",
+        r"^(?:how are you|who are you|what are you)",
+    ]
+    for pattern in conversational_patterns:
+        if re.search(pattern, q_lower):
+            return {"intent": "conversational", "confidence": 0.95}
 
     # No confident match — fall back to LLM
     return None
@@ -153,7 +167,7 @@ def _rule_based_classify(question: str) -> dict | None:
 
 def _parse_router_response(response_text: str) -> dict:
     """Parse the LLM's JSON classification response."""
-    valid_intents = {"factual", "summary", "deep_dive", "compare", "critique"}
+    valid_intents = {"factual", "summary", "deep_dive", "compare", "critique", "conversational"}
 
     try:
         # Try to find JSON in the response

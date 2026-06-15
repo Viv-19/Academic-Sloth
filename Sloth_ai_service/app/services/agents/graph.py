@@ -36,6 +36,7 @@ from app.services.agents.summary_agent import run_summary_agent
 from app.services.agents.deep_dive_agent import run_deep_dive_agent
 from app.services.agents.compare_agent import run_compare_agent
 from app.services.agents.critique_agent import run_critique_agent
+from app.services.agents.conversational_agent import run_conversational_agent
 from app.services.agents.citation_agent import extract_citations
 from app.services.rag.grounding_guard import check_grounding
 from app.core.config import settings
@@ -52,6 +53,10 @@ def run_grounding_guard(state: AgentState) -> AgentState:
     LangGraph node: Checks if the generated response is grounded
     in the source chunks. Adds grounding metadata to the state.
     """
+    # Conversational intent skips grounding
+    if state.get("intent") == "conversational":
+        return state
+
     response = state.get("response", "")
     chunks = state.get("reranked_chunks", [])
 
@@ -88,8 +93,6 @@ def route_to_agent(state: AgentState) -> str:
     """
     Conditional edge function: routes to the appropriate
     specialized agent based on the router's intent classification.
-
-    Returns the node name to execute next.
     """
     intent = state.get("intent", "factual")
 
@@ -99,6 +102,7 @@ def route_to_agent(state: AgentState) -> str:
         "deep_dive": "deep_dive_agent",
         "compare": "compare_agent",
         "critique": "critique_agent",
+        "conversational": "conversational_agent",
     }
 
     target = routing_map.get(intent, "factual_agent")
@@ -113,11 +117,6 @@ def route_to_agent(state: AgentState) -> str:
 def _build_graph() -> StateGraph:
     """
     Constructs the LangGraph StateGraph.
-
-    This function defines the topology:
-    - Which nodes exist
-    - How they're connected
-    - Conditional edges (routing)
     """
     graph = StateGraph(AgentState)
 
@@ -128,6 +127,7 @@ def _build_graph() -> StateGraph:
     graph.add_node("deep_dive_agent", run_deep_dive_agent)
     graph.add_node("compare_agent", run_compare_agent)
     graph.add_node("critique_agent", run_critique_agent)
+    graph.add_node("conversational_agent", run_conversational_agent)
     graph.add_node("grounding_guard", run_grounding_guard)
     graph.add_node("citation_agent", extract_citations)
 
@@ -144,12 +144,16 @@ def _build_graph() -> StateGraph:
             "deep_dive_agent": "deep_dive_agent",
             "compare_agent": "compare_agent",
             "critique_agent": "critique_agent",
+            "conversational_agent": "conversational_agent",
         },
     )
 
     # ── Linear Edges: Agent → Grounding → Citation → END ─────────
     for agent_node in ["factual_agent", "summary_agent", "deep_dive_agent", "compare_agent", "critique_agent"]:
         graph.add_edge(agent_node, "grounding_guard")
+
+    # Conversational agent skips grounding and citations entirely!
+    graph.add_edge("conversational_agent", END)
 
     graph.add_edge("grounding_guard", "citation_agent")
     graph.add_edge("citation_agent", END)
